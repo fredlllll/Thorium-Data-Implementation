@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Data.Common;
 using MySql.Data.MySqlClient;
-using Thorium_Data;
 
-namespace Thorium_Data_Impl
+namespace Thorium.Data.Implementation
 {
     public class MySqlDatabase : IRawDatabase, IDisposable
     {

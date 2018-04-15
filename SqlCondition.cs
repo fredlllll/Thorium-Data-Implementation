@@ -1,4 +1,4 @@
-﻿namespace Thorium_Data_Impl
+﻿namespace Thorium.Data.Implementation
 {
     public class SqlCondition : SqlValue
     {

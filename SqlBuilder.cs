@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 
-namespace Thorium_Data_Impl
+namespace Thorium.Data.Implementation
 {
     public static class SqlBuilder
     {

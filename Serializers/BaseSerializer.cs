@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using Thorium_Data;
 
-namespace Thorium_Data_Impl.Serializers
+namespace Thorium.Data.Implementation.Serializers
 {
     public abstract class BaseSerializer<TKey, TValue> : ISerializer<TKey, TValue>
     {
