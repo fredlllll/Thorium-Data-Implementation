@@ -29,6 +29,7 @@ namespace Thorium.Data.Implementation.Serializers
             DbDataReader reader = Database.ExecuteQuery(sql, key);
             if(!reader.HasRows)
             {
+                reader.Close();
                 throw new KeyNotFoundException("no element with key '" + key + "' found in database");
             }
             return reader;
