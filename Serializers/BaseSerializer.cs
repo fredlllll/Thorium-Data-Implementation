@@ -6,7 +6,7 @@ namespace Thorium.Data.Implementation.Serializers
 {
     public abstract class BaseSerializer<TKey, TValue> : ISerializer<TKey, TValue>
     {
-        public abstract IRawDatabase Database { get; }
+        public abstract ARawDatabaseFactory DatabaseFactory { get; }
         public abstract string Table { get; }
         public abstract string KeyColumn { get; }
 
@@ -19,14 +19,14 @@ namespace Thorium.Data.Implementation.Serializers
         {
             string sql = SqlBuilder.DeleteWhere(Table, new SqlCondition(KeyColumn, key));
             //string sql = "DELETE FROM " + Table + " WHERE " + KeyColumn + "=@0;";
-            Database.ExecuteNonQueryTransaction(sql, key);
+            DatabaseFactory.GetDatabase().ExecuteNonQueryTransaction(sql, key);
         }
 
         public DbDataReader SelectStarWhereKey(TKey key)
         {
             string sql = SqlBuilder.SelectFrom(new string[] { "*" }, Table, new string[] { KeyColumn });
             //string sql = "SELECT * FROM " + Table + " WHERE " + KeyColumn + " = @0;";
-            DbDataReader reader = Database.ExecuteQuery(sql, key);
+            DbDataReader reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql, key);
             if(!reader.HasRows)
             {
                 reader.Close();
@@ -58,7 +58,7 @@ namespace Thorium.Data.Implementation.Serializers
             }
             sql.Append(";");*/
 
-            DbDataReader reader = Database.ExecuteQuery(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray());
+            DbDataReader reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray());
             return reader;
         }
 
@@ -67,7 +67,7 @@ namespace Thorium.Data.Implementation.Serializers
             string sql = SqlBuilder.SelectFrom(new string[] { KeyColumn }, Table);
             //string sql = "SELECT " + KeyColumn + " FROM " + Table;
             List<TKey> keys = new List<TKey>();
-            using(var reader = Database.ExecuteQuery(sql))
+            using(var reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql))
             {
                 if(reader.HasRows)
                 {
@@ -112,7 +112,7 @@ namespace Thorium.Data.Implementation.Serializers
             sql.Append(";");*/
 
             List<TKey> keys = new List<TKey>();
-            using(var reader = Database.ExecuteQuery(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray()))
+            using(var reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray()))
             {
                 if(reader.HasRows)
                 {
@@ -133,7 +133,7 @@ namespace Thorium.Data.Implementation.Serializers
         {
             string sql = SqlBuilder.DeleteWhere(Table, new string[] { column });
             //string sql = "DELETE FROM " + Table + " WHERE " + column + " = @0";
-            Database.ExecuteNonQueryTransaction(sql, whereis);
+            DatabaseFactory.GetDatabase().ExecuteNonQueryTransaction(sql, whereis);
         }
 
         public void DeleteWhere(params SqlCondition[] conditions)
@@ -159,7 +159,7 @@ namespace Thorium.Data.Implementation.Serializers
             }
             sql.Append(";");*/
 
-            Database.ExecuteNonQueryTransaction(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray());
+            DatabaseFactory.GetDatabase().ExecuteNonQueryTransaction(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray());
         }
     }
 }

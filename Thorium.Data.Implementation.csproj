@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Thorium-Config\Thorium.Config.csproj" />
     <ProjectReference Include="..\Thorium-Data\Thorium.Data.csproj" />
   </ItemGroup>
 
