@@ -18,14 +18,12 @@ namespace Thorium.Data.Implementation.Serializers
         public void Delete(TKey key)
         {
             string sql = SqlBuilder.DeleteWhere(Table, new SqlCondition(KeyColumn, key));
-            //string sql = "DELETE FROM " + Table + " WHERE " + KeyColumn + "=@0;";
             DatabaseFactory.GetDatabase().ExecuteNonQueryTransaction(sql, key);
         }
 
         public DbDataReader SelectStarWhereKey(TKey key)
         {
             string sql = SqlBuilder.SelectFrom(new string[] { "*" }, Table, new string[] { KeyColumn });
-            //string sql = "SELECT * FROM " + Table + " WHERE " + KeyColumn + " = @0;";
             DbDataReader reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql, key);
             if(!reader.HasRows)
             {
@@ -38,26 +36,6 @@ namespace Thorium.Data.Implementation.Serializers
         public DbDataReader SelectStarWhere(params SqlCondition[] conditions)
         {
             string sql = SqlBuilder.SelectFrom(new string[] { "*" }, Table, conditions);
-
-            /*StringBuilder sql = new StringBuilder("SELECT * FROM " + Table);
-            if(conditions.Length > 0)
-            {
-                sql.Append(" WHERE");
-                for(int i = 0; i < conditions.Length; i++)
-                {
-                    var cond = conditions[i];
-                    sql.Append(" ");
-                    sql.Append(cond.Item1);
-                    sql.Append(" = ");
-                    sql.Append("@" + i);
-                    if(i < conditions.Length - 1)
-                    {
-                        sql.Append(" AND ");
-                    }
-                }
-            }
-            sql.Append(";");*/
-
             DbDataReader reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray());
             return reader;
         }
@@ -65,7 +43,6 @@ namespace Thorium.Data.Implementation.Serializers
         public IEnumerable<TValue> LoadAll()
         {
             string sql = SqlBuilder.SelectFrom(new string[] { KeyColumn }, Table);
-            //string sql = "SELECT " + KeyColumn + " FROM " + Table;
             List<TKey> keys = new List<TKey>();
             using(var reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql))
             {
@@ -92,25 +69,6 @@ namespace Thorium.Data.Implementation.Serializers
         {
             string sql = SqlBuilder.SelectFrom(new string[] { KeyColumn }, Table, conditions);
 
-            /*StringBuilder sql = new StringBuilder("SELECT " + KeyColumn + " FROM " + Table);
-            if(conditions.Length > 0)
-            {
-                sql.Append(" WHERE");
-                for(int i = 0; i < conditions.Length; i++)
-                {
-                    var cond = conditions[i];
-                    sql.Append(" ");
-                    sql.Append(cond.Item1);
-                    sql.Append(" = ");
-                    sql.Append("@" + i);
-                    if(i < conditions.Length - 1)
-                    {
-                        sql.Append(" AND ");
-                    }
-                }
-            }
-            sql.Append(";");*/
-
             List<TKey> keys = new List<TKey>();
             using(var reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray()))
             {
@@ -132,33 +90,12 @@ namespace Thorium.Data.Implementation.Serializers
         public void DeleteWhere<TWhere>(string column, TWhere whereis)
         {
             string sql = SqlBuilder.DeleteWhere(Table, new string[] { column });
-            //string sql = "DELETE FROM " + Table + " WHERE " + column + " = @0";
             DatabaseFactory.GetDatabase().ExecuteNonQueryTransaction(sql, whereis);
         }
 
         public void DeleteWhere(params SqlCondition[] conditions)
         {
             string sql = SqlBuilder.DeleteWhere(Table, conditions);
-
-            /*StringBuilder sql = new StringBuilder("DELETE FROM " + Table);
-            if(conditions.Length > 0)
-            {
-                sql.Append(" WHERE");
-                for(int i = 0; i < conditions.Length; i++)
-                {
-                    var cond = conditions[i];
-                    sql.Append(" ");
-                    sql.Append(cond.Item1);
-                    sql.Append(" = ");
-                    sql.Append("@" + i);
-                    if(i < conditions.Length - 1)
-                    {
-                        sql.Append(" AND ");
-                    }
-                }
-            }
-            sql.Append(";");*/
-
             DatabaseFactory.GetDatabase().ExecuteNonQueryTransaction(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray());
         }
     }
