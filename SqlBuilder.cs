@@ -33,6 +33,39 @@ namespace Thorium.Data.Implementation
             return sql.ToString();
         }
 
+        public static string Count(string table)
+        {
+            return "SELECT COUNT(*) FROM " + table;
+        }
+
+        public static string CountWhere(string table, params SqlCondition[] conditions)
+        {
+            return CountWhere(table, conditions.Select(x => x.Column).ToArray());
+        }
+
+        public static string CountWhere(string table, string[] whereColumns)
+        {
+            StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM " + table);
+            if(whereColumns.Length > 0)
+            {
+                sql.Append(" WHERE");
+                for(int i = 0; i < whereColumns.Length; i++)
+                {
+                    var column = whereColumns[i];
+                    sql.Append(" ");
+                    sql.Append(column);
+                    sql.Append(" = ");
+                    sql.Append("@" + i);
+                    if(i < whereColumns.Length - 1)
+                    {
+                        sql.Append(" AND ");
+                    }
+                }
+            }
+            sql.Append(";");
+            return sql.ToString();
+        }
+
         public static string InsertOrUpdate(string table, params SqlValue[] values)
         {
             return InsertOrUpdate(table, values.Select(x => x.Column).ToArray());

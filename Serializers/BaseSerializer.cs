@@ -21,6 +21,26 @@ namespace Thorium.Data.Implementation.Serializers
             DatabaseFactory.GetDatabase().ExecuteNonQueryTransaction(sql, key);
         }
 
+        public long CountWhere(params SqlCondition[] conditions)
+        {
+            string sql = SqlBuilder.CountWhere(Table, conditions);
+            using(DbDataReader reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql.ToString(), conditions.Select(x => x.ShouldBe).ToArray()))
+            {
+                reader.Read();
+                return (long)reader[0];
+            }
+        }
+
+        public long Count()
+        {
+            string sql = SqlBuilder.Count(Table);
+            using(DbDataReader reader = DatabaseFactory.GetDatabase().ExecuteQuery(sql.ToString()))
+            {
+                reader.Read();
+                return (long)reader[0];
+            }
+        }
+
         public DbDataReader SelectStarWhereKey(TKey key)
         {
             string sql = SqlBuilder.SelectFrom(new string[] { "*" }, Table, new string[] { KeyColumn });
